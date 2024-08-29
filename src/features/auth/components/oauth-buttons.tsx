@@ -28,7 +28,7 @@ export const OAuthButtons = () => {
         className="relative w-full"
       >
         <GithubIcon className="absolute left-2.5 size-5" />
-        Continue with Github
+        Continue with GitHub
       </Button>
     </div>
   );
