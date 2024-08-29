@@ -1,6 +1,6 @@
 import { useAuthActions } from '@convex-dev/auth/react';
-import { FaGithub } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
+import { GithubIcon } from '@/components/assets/icons/github-icon';
+import { GoogleIcon } from '@/components/assets/icons/google-icon';
 import { Button } from '@/components/ui/button';
 
 export const OAuthButtons = () => {
@@ -17,7 +17,7 @@ export const OAuthButtons = () => {
         size="lg"
         className="relative w-full"
       >
-        <FcGoogle className="absolute left-2.5 size-5" />
+        <GoogleIcon className="absolute left-2.5 size-5" />
         Continue with Google
       </Button>
       <Button
@@ -27,7 +27,7 @@ export const OAuthButtons = () => {
         size="lg"
         className="relative w-full"
       >
-        <FaGithub className="absolute left-2.5 size-5" />
+        <GithubIcon className="absolute left-2.5 size-5" />
         Continue with Github
       </Button>
     </div>
