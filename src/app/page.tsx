@@ -1,7 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   return (
-    <Button size="lg">Click me</Button>
+    <Button className="flex bg-red-500 text-2xl" size="lg">
+      Click me
+    </Button>
   );
 }
