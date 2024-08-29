@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LockIcon, MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -35,6 +36,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
+            icon={<MailIcon />}
             required
           />
           <Input
@@ -43,6 +45,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             type="password"
+            icon={<LockIcon />}
             required
           />
           <Input
@@ -51,6 +54,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm password"
             type="password"
+            icon={<LockIcon />}
             required
           />
           <Button type="submit" className="w-full" size="lg" disabled={false}>

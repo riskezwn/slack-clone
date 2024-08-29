@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LockIcon, MailIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -33,12 +34,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
+            icon={<MailIcon />}
             type="email"
             required
           />
           <Input
             disabled={false}
             value={password}
+            icon={<LockIcon />}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             type="password"
