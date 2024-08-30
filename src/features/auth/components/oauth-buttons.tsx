@@ -4,10 +4,17 @@ import { GithubIcon } from '@/components/assets/icons/github-icon';
 import { GoogleIcon } from '@/components/assets/icons/google-icon';
 import { Button } from '@/components/ui/button';
 
-export const OAuthButtons = () => {
+interface OAuthButtonsProps {
+  setPending: (pending: boolean) => void;
+}
+
+export const OAuthButtons = ({ setPending }: OAuthButtonsProps) => {
   const { signIn } = useAuthActions();
 
-  const handleProviderSignIn = (provider: 'github' | 'google') => signIn(provider);
+  const handleProviderSignIn = (provider: 'github' | 'google') => {
+    setPending(true);
+    signIn(provider).finally(() => setPending(false));
+  };
 
   return (
     <div className="flex flex-col gap-y-2.5">
