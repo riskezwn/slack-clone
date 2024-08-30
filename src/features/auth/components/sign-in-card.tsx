@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { LockIcon, MailIcon } from 'lucide-react';
+import { useAuthActions } from '@convex-dev/auth/react';
+import { LockIcon, MailIcon, TriangleAlert } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,9 +23,26 @@ interface SignInCardProps {
 }
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
+  const { signIn } = useAuthActions();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
+
+  console.log(error);
+
+  const onCredentialsSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+
+    signIn('password', { email, password, flow: 'signIn' })
+      .catch(() => {
+        setError('Invalid email or password');
+      })
+      .finally(() => setPending(false));
+  };
 
   return (
     <Card className="h-full w-full p-8">
@@ -32,8 +50,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <CardTitle>Login to continue</CardTitle>
         <CardDescription>Use your email or another service to sign in.</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="mb-6 flex items-center gap-x-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form onSubmit={onCredentialsSignIn} className="space-y-2.5">
           <Input
             disabled={pending}
             value={email}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { LockIcon, MailIcon } from 'lucide-react';
+import { useAuthActions } from '@convex-dev/auth/react';
+import { LockIcon, MailIcon, TriangleAlert } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,10 +23,30 @@ interface SignUpCardProps {
 }
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
+  const { signIn } = useAuthActions();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
+
+  const onCredentialsSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setPending(true);
+    signIn('password', { email, password, flow: 'signUp' })
+      .catch(() => {
+        setError('Something went wrong');
+      })
+      .finally(() => setPending(false));
+  };
 
   return (
     <Card className="h-full w-full p-8">
@@ -33,8 +54,14 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         <CardTitle>Sign up to continue</CardTitle>
         <CardDescription>Use your email or another service to sign up.</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="mb-6 flex items-center gap-x-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form onSubmit={onCredentialsSignUp} className="space-y-2.5">
           <Input
             disabled={pending}
             value={email}
