@@ -1,5 +1,7 @@
 import { useState } from 'react';
+
 import { LockIcon, MailIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,7 +12,9 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+
 import { SignInFlow } from '../types';
+
 import { OAuthButtons } from './oauth-buttons';
 
 interface SignInCardProps {

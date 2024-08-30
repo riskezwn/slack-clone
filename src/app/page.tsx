@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuthActions } from '@convex-dev/auth/react';
+
 import { Button } from '@/components/ui/button';
 
 const HomePage = () => {
