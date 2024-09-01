@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
 import { useAuthActions } from '@convex-dev/auth/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LockIcon, MailIcon, TriangleAlert, User } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
@@ -22,19 +26,49 @@ interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
 
+const signUpSchema = z
+  .object({
+    name: z.string().min(2, {
+      message: 'Username must be at least 2 characters.',
+    }),
+    email: z.string().email({ message: 'Invalid email address.' }),
+    password: z.string().min(8, {
+      message: 'Password must be at least 8 characters.',
+    }),
+    confirmPassword: z.string().min(8, {
+      message: 'Password confirmation must be at least 8 characters.',
+    }),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'The passwords did not match',
+        path: ['confirmPassword'],
+      });
+    }
+  });
+
+type SignUpSchema = z.infer<typeof signUpSchema>;
+
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
   const { signIn } = useAuthActions();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const form = useForm<SignUpSchema>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      confirmPassword: '',
+      email: '',
+      name: '',
+      password: '',
+    },
+  });
 
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
 
-  const onCredentialsSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onCredentialsSignUp = async (values: SignUpSchema) => {
+    const { confirmPassword, password, name, email } = values;
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -62,47 +96,69 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         </div>
       )}
       <CardContent className="space-y-5 px-0 pb-0">
-        <form onSubmit={onCredentialsSignUp} className="space-y-2.5">
-          <Input
-            disabled={pending}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full name"
-            type="text"
-            icon={<User />}
-            required
-          />
-          <Input
-            disabled={pending}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            type="email"
-            icon={<MailIcon />}
-            required
-          />
-          <Input
-            disabled={pending}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            type="password"
-            icon={<LockIcon />}
-            required
-          />
-          <Input
-            disabled={pending}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm password"
-            type="password"
-            icon={<LockIcon />}
-            required
-          />
-          <Button type="submit" className="w-full" size="lg" disabled={pending}>
-            Continue
-          </Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onCredentialsSignUp)} className="space-y-2.5">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  disabled={pending}
+                  placeholder="Full name"
+                  type="text"
+                  icon={<User />}
+                  // required
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  disabled={pending}
+                  placeholder="Email"
+                  type="email"
+                  icon={<MailIcon />}
+                  // required
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  disabled={pending}
+                  type="password"
+                  placeholder="Password"
+                  icon={<LockIcon />}
+                  // required
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  disabled={pending}
+                  type="password"
+                  icon={<LockIcon />}
+                  placeholder="Confirm password"
+                  // required
+                />
+              )}
+            />
+            <Button type="submit" className="w-full" size="lg" disabled={pending}>
+              Continue
+            </Button>
+          </form>
+        </Form>
         <Separator />
         <OAuthButtons setPending={setPending} />
         <p className="text-sm text-muted-foreground">
