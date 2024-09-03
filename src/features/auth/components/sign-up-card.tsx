@@ -26,18 +26,37 @@ interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
 
+const minLengthErrorMessage = 'Password must be at least 8 characters long';
+const maxLengthErrorMessage = 'Password must not exceed 20 characters';
+const uppercaseErrorMessage = 'Password must contain at least one uppercase letter';
+const lowercaseErrorMessage = 'Password must contain at least one lowercase letter';
+const numberErrorMessage = 'Password must contain at least one number';
+const specialCharacterErrorMessage =
+  'Password must contain at least one special character (!@#$%^&*)';
+
+const passwordSchema = z
+  .string()
+  .min(8, { message: minLengthErrorMessage })
+  .max(20, { message: maxLengthErrorMessage })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: uppercaseErrorMessage,
+  })
+  .refine((password) => /[a-z]/.test(password), {
+    message: lowercaseErrorMessage,
+  })
+  .refine((password) => /[0-9]/.test(password), { message: numberErrorMessage })
+  .refine((password) => /[!@#$%^&*]/.test(password), {
+    message: specialCharacterErrorMessage,
+  });
+
 const signUpSchema = z
   .object({
     name: z.string().min(2, {
       message: 'Username must be at least 2 characters.',
     }),
     email: z.string().email({ message: 'Invalid email address.' }),
-    password: z.string().min(8, {
-      message: 'Password must be at least 8 characters.',
-    }),
-    confirmPassword: z.string().min(8, {
-      message: 'Password confirmation must be at least 8 characters.',
-    }),
+    password: passwordSchema,
+    confirmPassword: z.string(),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
