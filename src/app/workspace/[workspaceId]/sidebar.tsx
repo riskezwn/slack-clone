@@ -1,5 +1,3 @@
-'use client';
-
 import { Bell, Home, MessagesSquare, MoreHorizontal } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
