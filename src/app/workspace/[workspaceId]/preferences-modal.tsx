@@ -45,10 +45,7 @@ export const PreferencesModal = ({
   const workspaceId = useWorkspaceId();
   const router = useRouter();
 
-  const [ConfirmDialog, confirm] = useConfirm(
-    'Are you sure?',
-    'This action is irreversible.',
-  );
+  const [ConfirmDialog, confirm] = useConfirm();
 
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -83,9 +80,7 @@ export const PreferencesModal = ({
   };
 
   const handleRemove = async () => {
-    const ok = await confirm();
-
-    console.log(ok);
+    const ok = await confirm('Are you sure?', 'This action is irreversible.');
 
     if (!ok) return;
 

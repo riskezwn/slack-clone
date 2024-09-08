@@ -10,17 +10,19 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-export const useConfirm = (
-  title: string,
-  message: string,
-): [() => JSX.Element, () => Promise<unknown>] => {
-  const [promise, setPromise] = useState<{ resolve: (value: boolean) => void } | null>(
-    null,
-  );
+export const useConfirm = (): [
+  () => JSX.Element,
+  (title: string, message: string) => Promise<unknown>,
+] => {
+  const [promise, setPromise] = useState<{
+    resolve: (value: boolean) => void;
+    title: string;
+    message: string;
+  } | null>(null);
 
-  const confirm = () =>
+  const confirm = (title: string, message: string) =>
     new Promise((resolve) => {
-      setPromise({ resolve });
+      setPromise({ resolve, title, message });
     });
 
   const handleClose = () => {
@@ -41,8 +43,8 @@ export const useConfirm = (
     <Dialog open={promise !== null}>
       <DialogContent hideCloseButton>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{message}</DialogDescription>
+          <DialogTitle>{promise?.title}</DialogTitle>
+          <DialogDescription>{promise?.message}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="pt-2">
           <Button onClick={handleCancel} variant="outline">
