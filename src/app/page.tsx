@@ -4,7 +4,6 @@ import { useEffect, useMemo } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { UserButton } from '@/features/auth/components/user-button';
 import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspaces';
 import { useCreateWorkspaceModal } from '@/features/workspaces/store/use-create-workspace-modal';
 
@@ -24,11 +23,7 @@ const HomePage = () => {
       setOpen(true);
     }
   }, [isLoading, workspaceId, open, setOpen, router]);
-  return (
-    <div>
-      <UserButton />
-    </div>
-  );
+  return <div className="h-full bg-[#603161]"></div>;
 };
 
 export default HomePage;
