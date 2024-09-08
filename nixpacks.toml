@@ -1,7 +1,7 @@
 # nixpacks.toml
 
 [phases.build]
-cmd = "npx convex deploy --cmd 'npm run build'"
+cmds = ["npx convex deploy --cmd 'npm run build'"]
 
 [phases.start]
-cmd = "npm run start"
+cmds = ["npm run start"]
