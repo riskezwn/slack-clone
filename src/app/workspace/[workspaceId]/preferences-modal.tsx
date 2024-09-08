@@ -1,8 +1,34 @@
 import { useState } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Form, FormField } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useRemoveWorkspace } from '@/features/workspaces/api/use-remove-workspace';
+import { useUpdateWorkspace } from '@/features/workspaces/api/use-update-workspace';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
+
+export const updateWorkspaceSchema = z.object({
+  name: z.string().min(3, { message: 'Name must have at least 3 characters' }),
+});
+
+type UpdateWorkspaceSchema = z.infer<typeof updateWorkspaceSchema>;
 
 interface PreferencesModalProps {
   open: boolean;
@@ -15,25 +41,118 @@ export const PreferencesModal = ({
   setOpen,
   initialValue,
 }: PreferencesModalProps) => {
-  const [value] = useState(initialValue);
+  const workspaceId = useWorkspaceId();
+  const router = useRouter();
+
+  const [openEdit, setOpenEdit] = useState(false);
+
+  const form = useForm<UpdateWorkspaceSchema>({
+    resolver: zodResolver(updateWorkspaceSchema),
+    defaultValues: {
+      name: initialValue,
+    },
+  });
+
+  const { mutate: updateWorkspace, isPending: isUpdatingWorkspace } =
+    useUpdateWorkspace();
+  const { mutate: removeWorkspace, isPending: isRemovingWorkspace } =
+    useRemoveWorkspace();
+
+  const handleEdit = (values: UpdateWorkspaceSchema) => {
+    updateWorkspace(
+      {
+        id: workspaceId,
+        name: values.name,
+      },
+      {
+        onSuccess() {
+          toast.success('Workspace updated');
+          setOpenEdit(false);
+        },
+        onError() {
+          toast.error('Failed to update workspace');
+        },
+      },
+    );
+  };
+
+  const handleRemove = () => {
+    removeWorkspace(
+      {
+        id: workspaceId,
+      },
+      {
+        onSuccess() {
+          toast.success('Workspace removed :(');
+          router.replace('/');
+        },
+        onError() {
+          toast.error('Failed to remove workspace');
+        },
+      },
+    );
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        form.reset();
+      }}
+    >
       <DialogContent className="overflow-hidden bg-gray-50 p-0">
         <DialogHeader className="border-b bg-white p-4">
-          <DialogTitle>{value}</DialogTitle>
+          <DialogTitle>{initialValue}</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <div className="flex flex-col gap-y-2 px-4 pb-4">
-          <div className="cursor-pointer rounded-lg border bg-white px-5 py-4 hover:bg-gray-50">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold">Workspace name</p>
-              <p className="text-sm font-semibold text-[#1264a3] hover:underline">Edit</p>
-            </div>
-            <p className="text-sm">{value}</p>
-          </div>
+          <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+            <DialogTrigger asChild>
+              <div className="cursor-pointer rounded-lg border bg-white px-5 py-4 hover:bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold">Workspace name</p>
+                  <p className="text-sm font-semibold text-[#1264a3] hover:underline">
+                    Edit
+                  </p>
+                </div>
+                <p className="text-sm">{initialValue}</p>
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Rename this workspace</DialogTitle>
+                <DialogDescription />
+              </DialogHeader>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        autoFocus
+                        disabled={isUpdatingWorkspace}
+                        placeholder="Workspace name, e.g. 'Work', 'Personal', 'Home'"
+                      />
+                    )}
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline" disabled={isUpdatingWorkspace}>
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button disabled={isUpdatingWorkspace}>Update</Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
           <button
-            disabled={false}
-            onClick={() => {}}
+            disabled={isRemovingWorkspace}
+            onClick={handleRemove}
             className="flex cursor-pointer items-center gap-x-2 rounded-lg border bg-red-100 px-5 py-4 text-rose-600 hover:bg-red-200/70"
           >
             <Trash className="size-4" />

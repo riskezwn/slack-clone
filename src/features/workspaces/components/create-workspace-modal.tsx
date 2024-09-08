@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -82,13 +83,13 @@ export const CreateWorkspaceModal = () => {
                   {...field}
                   autoFocus
                   disabled={isPending}
-                  placeholder="Workspace name, e.g. 'Work', 'Personal'"
+                  placeholder="Workspace name, e.g. 'Work', 'Personal', 'Home'"
                 />
               )}
             />
-            <div className="flex justify-end">
+            <DialogFooter>
               <Button disabled={isPending}>Create</Button>
-            </div>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
