@@ -6,13 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
 
-interface SidebarItemProps {
-  label: string;
-  id: string;
-  icon: LucideIcon;
-  variant?: VariantProps<typeof sidebarItemVariants>['variant'];
-}
-
 const sidebarItemVariants = cva(
   'flex items-center gap-1.5 justify-start font-normal h-7 px-[18px] text-sm overflow-hidden',
   {
@@ -27,6 +20,13 @@ const sidebarItemVariants = cva(
     },
   },
 );
+
+interface SidebarItemProps {
+  label: string;
+  id: string;
+  icon: LucideIcon;
+  variant?: VariantProps<typeof sidebarItemVariants>['variant'];
+}
 
 export const SidebarItem = ({ label, id, icon: Icon, variant }: SidebarItemProps) => {
   const workspaceId = useWorkspaceId();
