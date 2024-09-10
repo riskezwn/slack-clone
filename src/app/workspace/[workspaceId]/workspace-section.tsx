@@ -1,7 +1,9 @@
 import { ChevronDown, PlusIcon } from 'lucide-react';
+import { useToggle } from 'react-use';
 
 import { Hint } from '@/components/hint';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface WorkspaceSectionProps {
   children: React.ReactNode;
@@ -16,14 +18,18 @@ export const WorkspaceSection = ({
   hint,
   onNew,
 }: WorkspaceSectionProps) => {
+  const [on, toggle] = useToggle(true);
   return (
     <div className="mt-3 flex flex-col px-2">
       <div className="group flex items-center px-3.5">
         <Button
           variant="transparent"
           className="size-6 shrink-0 p-0.5 text-sm text-[#f9edffcc]"
+          onClick={toggle}
         >
-          <ChevronDown className="size-4" />
+          <ChevronDown
+            className={cn('size-4 transition-transform', on && '-rotate-90')}
+          />
         </Button>
         <Button
           variant="transparent"
@@ -45,7 +51,7 @@ export const WorkspaceSection = ({
           </Hint>
         )}
       </div>
-      {children}
+      {on && children}
     </div>
   );
 };
