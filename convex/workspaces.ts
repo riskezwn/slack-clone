@@ -3,8 +3,6 @@ import { v } from 'convex/values';
 
 import { query, mutation } from './_generated/server';
 
-const TABLE = 'workspaces';
-
 const generateCode = () => {
   const code = Array.from(
     {
@@ -46,7 +44,7 @@ export const get = query({
 
 export const getById = query({
   args: {
-    id: v.id(TABLE),
+    id: v.id('workspaces'),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -77,7 +75,7 @@ export const create = mutation({
 
     const joinCode = generateCode();
 
-    const workspaceId = await ctx.db.insert(TABLE, {
+    const workspaceId = await ctx.db.insert('workspaces', {
       name: args.name,
       userId,
       joinCode,
@@ -98,9 +96,37 @@ export const create = mutation({
   },
 });
 
+export const newJoinCode = mutation({
+  args: {
+    workspaceId: v.id('workspaces'),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error('Unauthorized');
+
+    const member = await ctx.db
+      .query('members')
+      .withIndex('by_workspace_id_by_user_id', (q) =>
+        q.eq('workspaceId', args.workspaceId).eq('userId', userId),
+      )
+      .unique();
+
+    if (!member || member.role !== 'admin') throw new Error('Unauthorized');
+
+    const joinCode = generateCode();
+
+    await ctx.db.patch(args.workspaceId, {
+      joinCode,
+    });
+
+    return args.workspaceId;
+  },
+});
+
 export const update = mutation({
   args: {
-    id: v.id(TABLE),
+    id: v.id('workspaces'),
     name: v.string(),
   },
   handler: async (ctx, args) => {
@@ -127,7 +153,7 @@ export const update = mutation({
 
 export const remove = mutation({
   args: {
-    id: v.id(TABLE),
+    id: v.id('workspaces'),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
