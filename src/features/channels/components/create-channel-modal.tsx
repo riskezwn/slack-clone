@@ -53,10 +53,13 @@ export const CreateChannelModal = () => {
     mutate(
       { name: values.name, workspaceId },
       {
-        onSuccess: () => {
+        onSuccess() {
           toast.success('New channel created!');
           // TODO: Redirect to new channel
           handleClose();
+        },
+        onError() {
+          toast.error('Failed to create channel');
         },
       },
     );
