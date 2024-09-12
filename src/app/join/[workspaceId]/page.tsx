@@ -67,8 +67,9 @@ const JoinPage = () => {
           autoFocus
           maxLength={6}
           value={value}
-          onChange={(value) => setValue(value)}
+          onChange={(value) => setValue(value?.toUpperCase())}
           pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+          inputMode="text"
           onComplete={handleComplete}
           disabled={isPending}
         >
