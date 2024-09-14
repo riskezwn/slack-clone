@@ -11,12 +11,12 @@ import { cn } from '@/lib/utils';
 import { Id } from '../../../../convex/_generated/dataModel';
 
 const userItemVariants = cva(
-  'flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden',
+  'flex h-7 items-center justify-start gap-1.5 overflow-hidden px-4 text-sm font-normal',
   {
     variants: {
       variant: {
         default: 'text-[#f9edffcc]',
-        active: 'text-[#481349] bg-white/90 hover:bg-white/90',
+        active: 'bg-white/90 text-[#481349] hover:bg-white/90',
       },
     },
     defaultVariants: {
@@ -45,9 +45,9 @@ export const UserItem = ({ id, label, image, variant }: UserItemsProps) => {
       asChild
     >
       <Link href={`/workspace/${workspaceId}/member/${id}`}>
-        <Avatar className="mr-1 size-5 rounded-md">
+        <Avatar className="mr-1 flex size-5 rounded-md">
           <AvatarImage className="rounded-md" src={image} />
-          <AvatarFallback className="rounded-md bg-sky-500 text-xs text-white">
+          <AvatarFallback className="flex rounded-md bg-sky-500 text-xs text-white">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>

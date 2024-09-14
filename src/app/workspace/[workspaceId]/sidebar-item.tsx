@@ -7,12 +7,12 @@ import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
 
 const sidebarItemVariants = cva(
-  'flex items-center gap-1.5 justify-start font-normal h-7 px-[18px] text-sm overflow-hidden',
+  'flex h-7 items-center justify-start gap-1.5 overflow-hidden px-[18px] text-sm font-normal',
   {
     variants: {
       variant: {
         default: 'text-[#f9edffcc]',
-        active: 'text-[#481349] bg-white/90 hover:bg-white/90',
+        active: 'bg-white/90 text-[#481349] hover:bg-white/90',
       },
     },
     defaultVariants: {

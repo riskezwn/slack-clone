@@ -2,6 +2,7 @@
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
+    "plugin:tailwindcss/recommended",
     "plugin:prettier/recommended"
   ],
   "ignorePatterns": ["convex/_generated"],

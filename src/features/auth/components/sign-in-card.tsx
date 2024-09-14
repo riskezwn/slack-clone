@@ -59,7 +59,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   };
 
   return (
-    <Card className="h-full w-full p-8">
+    <Card className="size-full p-8">
       <CardHeader className="px-0 pt-0">
         <CardTitle>Log in to continue</CardTitle>
         <CardDescription>Use your email or another service to sign in.</CardDescription>
