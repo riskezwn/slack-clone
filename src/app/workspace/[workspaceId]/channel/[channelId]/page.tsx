@@ -6,6 +6,7 @@ import { useGetChannel } from '@/features/channels/api/use-get-channel';
 import { useChannelId } from '@/hooks/use-channel-id';
 
 import { ChannelHeader } from './channel-header';
+import { ChatInput } from './chat-input';
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
@@ -32,6 +33,8 @@ const ChannelIdPage = () => {
   return (
     <div className="flex h-full flex-col">
       <ChannelHeader title={channel.name} />
+      <div className="flex-1" />
+      <ChatInput placeholder={`Message #${channel.name}`} />
     </div>
   );
 };
