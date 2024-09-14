@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -26,6 +27,8 @@ export const createChannelSchema = z.object({
 type CreateChannelSchema = z.infer<typeof createChannelSchema>;
 
 export const CreateChannelModal = () => {
+  const router = useRouter();
+
   const workspaceId = useWorkspaceId();
   const [open, setOpen] = useCreateChannelModal();
 
@@ -53,9 +56,9 @@ export const CreateChannelModal = () => {
     mutate(
       { name: values.name, workspaceId },
       {
-        onSuccess() {
+        onSuccess(channelId) {
           toast.success('New channel created!');
-          // TODO: Redirect to new channel
+          router.push(`/workspace/${workspaceId}/channel/${channelId}`);
           handleClose();
         },
         onError() {
