@@ -26,7 +26,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <ConvexClientProvider>
             <JotaiProvider>
-              <Toaster />
+              <Toaster richColors theme="light" />
               <Modals />
               {children}
             </JotaiProvider>
