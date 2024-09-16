@@ -145,7 +145,7 @@ const Editor = ({
     <div className="flex flex-col">
       <div className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition focus-within:border-slate-300 focus-within:shadow-sm">
         <div ref={containerRef} className="ql-custom h-full" />
-        <div className="z-[5] flex px-2 pb-2">
+        <div className="z-[5] flex gap-x-1 px-2 pb-2">
           <Hint label={isToolbarVisible ? 'Hide formatting' : 'Show formatting'}>
             <Button
               disabled={disabled}
