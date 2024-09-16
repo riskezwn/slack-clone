@@ -8,6 +8,7 @@ import 'quill/dist/quill.snow.css';
 
 import { cn } from '@/lib/utils';
 
+import { Emoji, EmojiPopover } from './emoji-popover';
 import { Hint } from './hint';
 import { Button } from './ui/button';
 
@@ -36,7 +37,9 @@ const Editor = ({
   placeholder = 'Write something...',
 }: EditorProps) => {
   const [text, setText] = useState('');
+
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
+  const [isEmojiPopoverVisible, setIsEmojiPopoverVisible] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const onSubmitRef = useRef(onSubmit);
@@ -130,6 +133,12 @@ const Editor = ({
     }
   };
 
+  const onEmojiSelect = (emoji: Emoji) => {
+    const quill = quillRef.current;
+
+    quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
+  };
+
   const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
 
   return (
@@ -147,11 +156,19 @@ const Editor = ({
               <ALargeSmallIcon className="size-4 text-muted-foreground" />
             </Button>
           </Hint>
-          <Hint label="Emoji">
-            <Button disabled={disabled} size="iconSm" variant="ghost" onClick={() => {}}>
+          <EmojiPopover
+            onEmojiSelect={onEmojiSelect}
+            open={isEmojiPopoverVisible}
+            setOpen={setIsEmojiPopoverVisible}
+          >
+            <Button
+              disabled={disabled}
+              size="iconSm"
+              variant={isEmojiPopoverVisible ? 'outline' : 'ghost'}
+            >
               <SmileIcon className="size-4 text-muted-foreground" />
             </Button>
-          </Hint>
+          </EmojiPopover>
           {variant === 'create' && (
             <Hint label="Image">
               <Button
