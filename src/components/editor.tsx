@@ -88,8 +88,16 @@ const Editor = ({
             enter: {
               key: 'Enter',
               handler: () => {
-                // TODO: Submit form
-                return;
+                const text = quill.getText();
+                const addedImage = imageElementRef.current?.files?.[0] || null;
+
+                const isEmpty =
+                  !addedImage && text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+
+                if (isEmpty) return;
+
+                const body = JSON.stringify(quill.getContents());
+                onSubmitRef.current?.({ body, image: addedImage });
               },
             },
             shift_enter: {
@@ -148,7 +156,7 @@ const Editor = ({
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
   };
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+  const isEmpty = !image && text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
 
   return (
     <div className="flex flex-col">
@@ -159,7 +167,12 @@ const Editor = ({
         onChange={(e) => setImage(e.target.files![0])}
         className="hidden"
       />
-      <div className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition focus-within:border-slate-300 focus-within:shadow-sm">
+      <div
+        className={cn(
+          'flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition focus-within:border-slate-300 focus-within:shadow-sm',
+          disabled && 'opacity-50',
+        )}
+      >
         <div ref={containerRef} className="ql-custom h-full" />
         {!!image && (
           <div className="p-2">
@@ -230,19 +243,29 @@ const Editor = ({
               )}
               disabled={disabled || isEmpty}
               size="iconSm"
-              onClick={() => {}}
+              onClick={() => {
+                onSubmit({
+                  body: JSON.stringify(quillRef.current?.getContents()),
+                  image,
+                });
+              }}
             >
               <SendHorizonalIcon className="size-4" />
             </Button>
           )}
           {variant === 'update' && (
             <div className="ml-auto flex items-center gap-x-2">
-              <Button variant="outline" size="sm" onClick={() => {}} disabled={false}>
+              <Button variant="outline" size="sm" onClick={onCancel} disabled={false}>
                 Cancel
               </Button>
               <Button
                 size="sm"
-                onClick={() => {}}
+                onClick={() => {
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image,
+                  });
+                }}
                 disabled={disabled || isEmpty}
                 className="bg-[#007a5a] text-white hover:bg-[#007a5a]/80"
               >

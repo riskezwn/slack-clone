@@ -51,12 +51,9 @@ export const CreateWorkspaceModal = () => {
           router.push(`/workspace/${id}`);
           handleClose();
         },
-        // onError(error) {
-        //   console.error(error);
-        // },
-        // onSettled() {
-        //   //Reset form
-        // },
+        onError() {
+          toast.error('Failed to create workspace');
+        },
       },
     );
   };
