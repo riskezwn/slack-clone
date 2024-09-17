@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
-import { cn } from '@/lib/utils';
+import { cn, getNameFirstLetter } from '@/lib/utils';
 
 import { Id } from '../../../../convex/_generated/dataModel';
 
@@ -35,7 +35,7 @@ interface UserItemsProps {
 export const UserItem = ({ id, label, image, variant }: UserItemsProps) => {
   const workspaceId = useWorkspaceId();
 
-  const avatarFallback = label?.charAt(0).toUpperCase();
+  const avatarFallback = getNameFirstLetter(label || '');
 
   return (
     <Button
