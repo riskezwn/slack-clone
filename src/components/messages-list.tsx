@@ -102,7 +102,7 @@ export const MessagesList = ({
                 updatedAt={message.updatedAt}
                 createdAt={message._creationTime}
                 isEditing={editingId === message._id}
-                setEditingId={() => setEditingId(message._id)}
+                setEditingId={setEditingId}
                 hideThreadButton={variant === 'thread'}
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}

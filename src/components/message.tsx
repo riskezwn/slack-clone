@@ -8,6 +8,7 @@ import { getNameFirstLetter } from '@/lib/utils';
 import { Doc, Id } from '../../convex/_generated/dataModel';
 
 import { Hint } from './hint';
+import { MessageToolbar } from './message-toolbar';
 import { Thumbnail } from './thumbnail';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
@@ -113,6 +114,17 @@ export const Message = ({
           ) : null}
         </div>
       </div>
+      {!isEditing && (
+        <MessageToolbar
+          isAuthor={isAuthor}
+          isPending={false}
+          handleEdit={() => setEditingId(id)}
+          handleThread={() => {}}
+          handleDelete={() => {}}
+          handleReaction={() => {}}
+          hideThreadButton={hideThreadButton}
+        />
+      )}
     </div>
   );
 };
