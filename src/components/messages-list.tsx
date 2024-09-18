@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // TODO: Remove this
+import { useState } from 'react';
+
 import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
 
+import { useCurrentMember } from '@/features/members/api/use-current-member';
 import { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
+import { Id } from '../../convex/_generated/dataModel';
+
+import { ChannelHero } from './channel-hero';
 import { Message } from './message';
 
 const TIME_THRESHOLD = 5;
@@ -40,6 +47,12 @@ export const MessagesList = ({
   isLoadingMore,
   canLoadMore,
 }: MessagesListProps) => {
+  const workspaceId = useWorkspaceId();
+
+  const [editingId, setEditingId] = useState<Id<'messages'> | null>(null);
+
+  const { data: currentMember } = useCurrentMember({ workspaceId });
+
   const groupedMessages = data?.reduce(
     (groups, message) => {
       const date = new Date(message._creationTime);
@@ -82,15 +95,15 @@ export const MessagesList = ({
                 memberId={message.memberId}
                 authorImage={message.user.image}
                 authorName={message.user.name}
-                isAuthor={false}
+                isAuthor={message.memberId === currentMember?._id}
                 reactions={message.reactions}
                 body={message.body}
                 image={message.image}
                 updatedAt={message.updatedAt}
                 createdAt={message._creationTime}
-                isEditing={false}
-                setEditingId={() => {}}
-                hideThreadButton={false}
+                isEditing={editingId === message._id}
+                setEditingId={() => setEditingId(message._id)}
+                hideThreadButton={variant === 'thread'}
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}
                 threadTimestamp={message.threadTimestamp}
@@ -99,6 +112,9 @@ export const MessagesList = ({
           })}
         </div>
       ))}
+      {variant === 'channel' && channelName && channelCreationTime && (
+        <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
     </div>
   );
 };
