@@ -197,7 +197,9 @@ export const Message = ({
           <button>
             <Avatar>
               <AvatarImage src={authorImage} />
-              <AvatarFallback>{getNameFirstLetter(authorName)}</AvatarFallback>
+              <AvatarFallback name={authorName}>
+                {getNameFirstLetter(authorName)}
+              </AvatarFallback>
             </Avatar>
           </button>
           {isEditing ? (

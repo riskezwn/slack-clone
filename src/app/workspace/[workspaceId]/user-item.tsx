@@ -47,9 +47,7 @@ export const UserItem = ({ id, label, image, variant }: UserItemsProps) => {
       <Link href={`/workspace/${workspaceId}/member/${id}`}>
         <Avatar className="mr-1 flex size-5 rounded-md">
           <AvatarImage className="rounded-md" src={image} />
-          <AvatarFallback className="flex rounded-md bg-sky-500 text-xs text-white">
-            {avatarFallback}
-          </AvatarFallback>
+          <AvatarFallback name={label}>{avatarFallback}</AvatarFallback>
         </Avatar>
         <span className="truncate text-sm">{label}</span>
       </Link>
