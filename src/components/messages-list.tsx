@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
+import { LoaderIcon } from 'lucide-react';
 
 import { useCurrentMember } from '@/features/members/api/use-current-member';
 import { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
@@ -112,6 +113,32 @@ export const MessagesList = ({
           })}
         </div>
       ))}
+      <div
+        className="h-1"
+        ref={(element) => {
+          if (element) {
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting && canLoadMore) {
+                  loadMore();
+                }
+              },
+              { threshold: 1.0 },
+            );
+
+            observer.observe(element);
+            return () => observer.disconnect();
+          }
+        }}
+      />
+      {isLoadingMore && (
+        <div className="relative my-2 text-center">
+          <hr className="absolute inset-x-0 top-1/2 border-t border-gray-300" />
+          <span className="relative inline-block rounded-full border border-gray-300 bg-white px-4 py-1 text-xs shadow-sm">
+            <LoaderIcon className="size-4 animate-spin" />
+          </span>
+        </div>
+      )}
       {variant === 'channel' && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
       )}
