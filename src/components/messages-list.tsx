@@ -2,19 +2,18 @@
 // TODO: Remove this
 import { useState } from 'react';
 
-import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
+import { differenceInMinutes, format } from 'date-fns';
 import { LoaderIcon } from 'lucide-react';
 
 import { useCurrentMember } from '@/features/members/api/use-current-member';
 import { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { formatDateLabel, TIME_THRESHOLD } from '@/lib/dates';
 
 import { Id } from '../../convex/_generated/dataModel';
 
 import { ChannelHero } from './channel-hero';
 import { Message } from './message';
-
-const TIME_THRESHOLD = 5;
 
 interface MessagesListProps {
   data: GetMessagesReturnType | undefined;
@@ -27,15 +26,6 @@ interface MessagesListProps {
   isLoadingMore: boolean;
   canLoadMore: boolean;
 }
-
-const formatDateLabel = (dateStr: string) => {
-  const date = new Date(dateStr);
-
-  if (isToday(date)) return 'Today';
-  if (isYesterday(date)) return 'Yesterday';
-
-  return format(date, 'EEEE, MMMM d');
-};
 
 export const MessagesList = ({
   data,
@@ -68,6 +58,7 @@ export const MessagesList = ({
     },
     {} as Record<string, typeof data>,
   );
+
   return (
     <div className="messages-scrollbar flex flex-1 flex-col-reverse overflow-y-auto pb-4">
       {Object.entries(groupedMessages || {}).map(([dateKey, messages]) => (
