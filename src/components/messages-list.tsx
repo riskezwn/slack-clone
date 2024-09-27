@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// TODO: Remove this
 import { useState } from 'react';
 
 import { differenceInMinutes, format } from 'date-fns';
@@ -13,6 +11,7 @@ import { formatDateLabel, TIME_THRESHOLD } from '@/lib/dates';
 import { Id } from '../../convex/_generated/dataModel';
 
 import { ChannelHero } from './channel-hero';
+import { ConversationHero } from './conversation-hero';
 import { Message } from './message';
 
 interface MessagesListProps {
@@ -132,6 +131,9 @@ export const MessagesList = ({
       )}
       {variant === 'channel' && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
+      {variant === 'conversation' && (
+        <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>
   );
