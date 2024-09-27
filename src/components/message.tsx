@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// TODO: Remove this
 import { format, isToday, isYesterday } from 'date-fns';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
@@ -16,6 +14,7 @@ import { Doc, Id } from '../../convex/_generated/dataModel';
 import { Hint } from './hint';
 import { MessageReactions } from './message-reactions';
 import { MessageToolbar } from './message-toolbar';
+import { ThreadBar } from './thread-bar';
 import { Thumbnail } from './thumbnail';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
@@ -50,12 +49,13 @@ interface MessageProps {
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
+  threadName?: string;
   threadTimestamp?: number;
 }
 
 export const Message = ({
   id,
-  memberId,
+  //memberId,
   authorImage,
   authorName = 'Member',
   isAuthor,
@@ -70,6 +70,7 @@ export const Message = ({
   hideThreadButton,
   threadCount,
   threadImage,
+  threadName,
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm();
@@ -79,7 +80,7 @@ export const Message = ({
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
   const { mutate: toggleReaction, isPending: isTogglingReaction } = useToggleReaction();
 
-  const isPending = isUpdatingMessage || isRemovingMessage;
+  const isPending = isUpdatingMessage || isRemovingMessage || isTogglingReaction;
 
   const handleReaction = (value: string) => {
     toggleReaction(
@@ -168,6 +169,12 @@ export const Message = ({
                   <span className="text-xs text-muted-foreground">(edited)</span>
                 ) : null}
                 <MessageReactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  count={threadCount}
+                  image={threadImage}
+                  timestamp={threadTimestamp}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -240,6 +247,13 @@ export const Message = ({
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
               <MessageReactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                count={threadCount}
+                image={threadImage}
+                name={threadName}
+                timestamp={threadTimestamp}
+                onClick={() => onOpenMessage(id)}
+              />
             </div>
           )}
         </div>

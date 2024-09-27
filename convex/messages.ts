@@ -28,7 +28,7 @@ const populateReactions = async (ctx: QueryCtx, messageId: Id<'messages'>) =>
     .withIndex('by_message_id', (q) => q.eq('messageId', messageId))
     .collect();
 
-const populateThreads = async (ctx: QueryCtx, messageId: Id<'messages'>) => {
+const populateThread = async (ctx: QueryCtx, messageId: Id<'messages'>) => {
   const messages = await ctx.db
     .query('messages')
     .withIndex('by_parent_message_id', (q) => q.eq('parentMessageId', messageId))
@@ -39,6 +39,7 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<'messages'>) => {
       count: 0,
       image: undefined,
       timestamp: 0,
+      name: '',
     };
   }
 
@@ -50,6 +51,7 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<'messages'>) => {
       count: 0,
       image: undefined,
       timestamp: 0,
+      name: '',
     };
   }
 
@@ -59,6 +61,7 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<'messages'>) => {
     count: messages.length,
     image: lastMessageUser?.image,
     timestamp: lastMessage._creationTime,
+    name: lastMessageUser?.name,
   };
 };
 
@@ -175,7 +178,7 @@ export const get = query({
             }
 
             const reactions = await populateReactions(ctx, message._id);
-            const thread = await populateThreads(ctx, message._id);
+            const thread = await populateThread(ctx, message._id);
             const image = message.image
               ? await ctx.storage.getUrl(message.image)
               : undefined;
@@ -218,6 +221,7 @@ export const get = query({
               reactions: reactionsWithoutMemberIdProperty,
               threadCount: thread.count,
               threadImage: thread.image,
+              threadName: thread.name,
               threadTimestamp: thread.timestamp,
             };
           }),
