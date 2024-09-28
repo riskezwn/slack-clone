@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 interface WorkspaceSectionProps {
   children: React.ReactNode;
   label: string;
-  hint: string;
+  hint?: string;
   onNew?: () => void;
 }
 
@@ -39,7 +39,7 @@ export const WorkspaceSection = ({
           <span className="truncate">{label}</span>
         </Button>
         {onNew && (
-          <Hint label={hint} side="top" align="center">
+          <Hint label={hint || ''} side="top" align="center">
             <Button
               onClick={onNew}
               variant="transparent"

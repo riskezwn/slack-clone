@@ -74,11 +74,7 @@ export const WorkspaceSidebar = () => {
             />
           ))}
       </WorkspaceSection>
-      <WorkspaceSection
-        label="Direct messages"
-        hint="New direct message"
-        onNew={() => {}}
-      >
+      <WorkspaceSection label="Direct messages" hint="New direct message">
         {!membersLoading &&
           members?.map((item) => (
             <UserItem
