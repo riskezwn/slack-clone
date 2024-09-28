@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Info, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +14,7 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useGetMembers } from '@/features/members/api/use-get-members';
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
@@ -25,6 +27,7 @@ export const Toolbar = () => {
   const [open, setOpen] = useState(false);
 
   const { data } = useGetWorkspace({ id: workspaceId });
+
   const { data: channels } = useGetChannels({ workspaceId });
   const { data: members } = useGetMembers({ workspaceId });
 
@@ -93,9 +96,23 @@ export const Toolbar = () => {
         </CommandDialog>
       </div>
       <div className="ml-auto flex flex-1 items-center justify-end">
-        <Button variant="transparent" size="iconSm">
-          <Info className="size-5 text-white" />
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="transparent" size="iconSm">
+              <Info className="size-5 text-white" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0">
+            <div className="flex flex-col text-sm">
+              <p className="border-b p-3 font-bold">Workspace info</p>
+              <p className="p-3">
+                <span className="italic">{data?.name}</span> was created on{' '}
+                {format(data!._creationTime, 'MMMM do, yyyy')}. Currently has{' '}
+                {channels?.length} channels and {members?.length} members.
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </nav>
   );
