@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { getNameFirstTwoLetters } from '@/lib/utils';
+import { getNameFirstLetter } from '@/lib/utils';
 
 import { useCurrentUser } from '../api/use-current-user';
 
@@ -24,7 +24,7 @@ export const UserButton = () => {
 
   const { name, image } = user;
 
-  const avatarFallback = getNameFirstTwoLetters(name!);
+  const avatarFallback = getNameFirstLetter(name!);
 
   return (
     <DropdownMenu modal={false}>

@@ -55,7 +55,7 @@ interface MessageProps {
 
 export const Message = ({
   id,
-  //memberId,
+  memberId,
   authorImage,
   authorName = 'Member',
   isAuthor,
@@ -74,7 +74,7 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm();
-  const { onOpenMessage, onClose, parentMessageId } = usePanel();
+  const { onOpenMessage, onOpenProfile, onClose, parentMessageId } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } = useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
@@ -206,7 +206,7 @@ export const Message = ({
         )}
       >
         <div className="flex items-start gap-2">
-          <button>
+          <button onClick={() => onOpenProfile(memberId)}>
             <Avatar>
               <AvatarImage src={authorImage} />
               <AvatarFallback name={authorName}>
@@ -227,9 +227,8 @@ export const Message = ({
           ) : (
             <div className="flex w-full flex-col overflow-hidden">
               <div className="text-sm">
-                {/* // TODO: Add function */}
                 <button
-                  onClick={() => {}}
+                  onClick={() => onOpenProfile(memberId)}
                   className="font-bold text-primary hover:underline"
                 >
                   {authorName}
